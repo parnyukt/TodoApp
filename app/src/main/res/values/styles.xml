@@ -1,0 +1,20 @@
+<resources>
+
+    <!-- Base application theme. -->
+    <style name="AppTheme" parent="Theme.AppCompat.Light">
+        <item name="android:windowBackground">@color/White</item>
+        <item name="colorPrimary">@color/Green_500</item>
+        <item name="colorPrimaryDark">@color/Green_700</item>
+        <item name="android:textColorPrimary">@color/White</item>
+        <item name="android:actionModeBackground">@color/White</item>
+        <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+
+    <style name="Text"></style>
+
+    <style name="Text.ListItem">
+        <item name="android:lines">1</item>
+        <item name="android:textSize">18sp</item>
+    </style>
+
+</resources>
