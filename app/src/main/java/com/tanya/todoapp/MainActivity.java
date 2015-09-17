@@ -15,7 +15,6 @@ import com.tanya.todoapp.adapter.TodoAdapter;
 import com.tanya.todoapp.model.TodoItem;
 import com.tanya.todoapp.model.TodoState;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -34,8 +33,6 @@ public class MainActivity extends AppCompatActivity {
 
         mTodoRecycleView = (RecyclerView)findViewById(R.id.todo_recycler_view);
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
         mTodoRecycleView.setHasFixedSize(true);
 
         // use a linear layout manager
@@ -51,9 +48,9 @@ public class MainActivity extends AppCompatActivity {
                     public void onItemClick(View view, int position) {
                         TodoItem item = mTodoAdapter.getItem(position);
 
-//                        Intent intent = new Intent(mContext, ViewPhotoActivity.class);
+                        Intent intent = new Intent(mContext, TodoNewItemActivity.class);
 //                        intent.putExtra("PATH", selfie.getSelfiePath());
-//                        startActivity(intent);
+                        startActivity(intent);
                     }
                 })
         );
@@ -97,7 +94,8 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void onAddNewItem(){
-
+        Intent intent = new Intent(mContext, TodoNewItemActivity.class);
+        startActivity(intent);
     }
 
     private void onSearch(){

@@ -5,4 +5,14 @@
 
     <string name="action_add_todo">Add</string>
     <string name="action_search">Search</string>
+    <string name="action_save">Save</string>
+
+    <string name="task_title">Task title</string>
+    <string name="task_desription">Task description</string>
+    <string name="txt_due">Due data</string>
+    <string name="txt_priority">Priority</string>
+    <string name="txt_urgent">Urgent</string>
+
+    <string name="btn_date">Set data</string>
+    <string name="btn_time">Set time</string>
 </resources>
