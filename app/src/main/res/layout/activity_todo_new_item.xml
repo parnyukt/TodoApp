@@ -34,7 +34,7 @@
         android:text="@string/txt_due"/>
 
     <CheckBox
-        android:id="@+id/urgentCheckBox"
+        android:id="@+id/urgent_check_box"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:text="@string/txt_urgent"/>
@@ -44,16 +44,20 @@
         android:layout_height="wrap_content">
 
         <Button
+            android:id="@+id/btn_date"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/btn_date"/>
+            android:text="@string/btn_date"
+            android:onClick="showDatePickerDialog"/>
 
         <Button
+            android:id="@+id/btn_time"
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="1"
-            android:text="@string/btn_time"/>
+            android:text="@string/btn_time"
+            android:onClick="showTimePickerDialog"/>
     </LinearLayout>
 
 
