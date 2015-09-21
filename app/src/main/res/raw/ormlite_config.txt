@@ -1,0 +1,30 @@
+# --table-start--
+dataClass=com.tanya.todoapp.model.TodoItem
+tableName=todoTask
+# --table-fields-start--
+# --field-start--
+fieldName=id
+columnName=id
+generatedId=true
+canBeNull = false
+# --field-end--
+# --field-start--
+fieldName=title
+# --field-end--
+# --field-start--
+fieldName=description
+# --field-end--
+# --field-start--
+fieldName=urgent
+# --field-end--
+# --field-start--
+fieldName=dueUtc
+columnName=due_utc
+# --field-end--
+# --field-start--
+fieldName=state
+canBeNull = false
+# --field-end--
+# --table-fields-end--
+# --table-end--
+#################################
