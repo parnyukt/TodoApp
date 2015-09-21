@@ -1,11 +1,17 @@
 package com.tanya.todoapp.model;
 
+import com.j256.ormlite.field.DatabaseField;
+
+import java.io.Serializable;
 import java.util.Date;
 
 /**
  * Created by tatyana on 16.09.15.
  */
-public class TodoItem {
+public class TodoItem implements Serializable {
+
+    public TodoItem(){
+    }
 
     public TodoItem(long id, String title, TodoState state){
         setId(id);
@@ -45,12 +51,12 @@ public class TodoItem {
         this.urgent = urgent;
     }
 
-    public Date getDueDatetime() {
-        return dueDatetime;
+    public Date getDueUtc() {
+        return dueUtc;
     }
 
-    public void setDueDatetime(Date dueDatetime) {
-        this.dueDatetime = dueDatetime;
+    public void setDueUtc(Date dueUtc) {
+        this.dueUtc = dueUtc;
     }
 
     public TodoState getState() {
@@ -61,11 +67,20 @@ public class TodoItem {
         this.state = state;
     }
 
+    @DatabaseField(generatedId = true)
     private long id;
-    private String title; // required
+
+    @DatabaseField(canBeNull = false)
+    private String title;
+
     private String description;
+
     private Boolean urgent;
-    private Date dueDatetime;
+
+    @DatabaseField(columnName = "due_utc")
+    private Date dueUtc;
+
+    @DatabaseField(canBeNull = false)
     private TodoState state;
 
 }

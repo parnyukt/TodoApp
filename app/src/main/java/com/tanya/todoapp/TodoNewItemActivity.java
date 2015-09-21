@@ -2,6 +2,7 @@ package com.tanya.todoapp;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Context;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -13,10 +14,15 @@ import android.widget.CheckBox;
 import android.widget.DatePicker;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
+import com.j256.ormlite.dao.Dao;
 import com.tanya.todoapp.fragment.DatePickerFragment;
 import com.tanya.todoapp.fragment.TimePickerFragment;
+import com.tanya.todoapp.model.TodoItem;
+import com.tanya.todoapp.model.TodoState;
 
+import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -30,6 +36,7 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
     SimpleDateFormat formatterDate = new SimpleDateFormat("dd/MM/yyyy");
     SimpleDateFormat formatterTime = new SimpleDateFormat("hh:mm");
 
+    private Context mContext;
     private TextView mTitleTextView;
     private TextView mDescriptionTextView;
     private CheckBox mUrgentCheckBox;
@@ -39,6 +46,8 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        mContext = this;
+
         setContentView(R.layout.activity_todo_new_item);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -72,14 +81,28 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
 
     private void onSaveItem(){
         //todo: save to db new item or update if exists
-        String title = mTitleTextView.getText().toString();
-        String description = mDescriptionTextView.getText().toString();
-        Boolean isUrgent = mUrgentCheckBox.isChecked();
+        TodoItem todoDetails = new TodoItem();
+        todoDetails.setTitle(mTitleTextView.getText().toString());
+        todoDetails.setDescription(mDescriptionTextView.getText().toString());
+        todoDetails.setUrgent(mUrgentCheckBox.isChecked());
+        todoDetails.setState(TodoState.Undone);
         String dateString = mDateBtn.getText() + " " + mTimeBtn.getText();
         Date dueDate = null;
         try {
             dueDate = formatter.parse(dateString);
+            todoDetails.setDueUtc(dueDate);
         } catch (ParseException e) {
+            e.printStackTrace();
+        }
+
+        try {
+            // This is how, a reference of DAO object can be done
+            final Dao<TodoItem, Integer> todoDao = TodoApp.get().getDbHelper().getTodoDao();
+            todoDao.create(todoDetails);
+
+            Toast.makeText(mContext, "Todo is added", Toast.LENGTH_LONG).show();
+
+        } catch (SQLException e) {
             e.printStackTrace();
         }
     }
