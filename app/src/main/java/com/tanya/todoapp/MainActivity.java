@@ -9,10 +9,15 @@ import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.CheckBox;
 
 import com.j256.ormlite.dao.Dao;
+import com.j256.ormlite.stmt.PreparedQuery;
+import com.j256.ormlite.stmt.QueryBuilder;
 import com.tanya.todoapp.adapter.RecyclerItemClickListener;
 import com.tanya.todoapp.adapter.TodoAdapter;
+import com.tanya.todoapp.data.TodoDao;
+import com.tanya.todoapp.data.TodoEntry;
 import com.tanya.todoapp.model.TodoItem;
 import com.tanya.todoapp.model.TodoState;
 
@@ -48,10 +53,16 @@ public class MainActivity extends AppCompatActivity {
                 new RecyclerItemClickListener(mContext, new RecyclerItemClickListener.OnItemClickListener() {
                     @Override
                     public void onItemClick(View view, int position) {
+                        //// TODO
+//                        CheckBox stateCheckBox = (CheckBox) view.findViewById(R.id.state_check);
+//                        if (stateCheckBox.isChecked()){
+//                            return;
+//                        }
+
                         TodoItem item = mTodoAdapter.getItem(position);
 
                         Intent intent = new Intent(mContext, TodoNewItemActivity.class);
-//                        intent.putExtra("PATH", selfie.getSelfiePath());
+                        intent.putExtra("todoItem", item);
                         startActivity(intent);
                     }
                 })
@@ -62,25 +73,11 @@ public class MainActivity extends AppCompatActivity {
     protected void onResume() {
         super.onResume();
 
-        //todo: get images from storage
-        List<TodoItem> items = new ArrayList<>();
-//        items.add(new TodoItem(1, "Create test app", TodoState.Undone));
-//        items.add(new TodoItem(2, "Send it by mail", TodoState.Undone));
+        List<TodoItem> items = TodoDao.getSortedItems();
 
-        // This is how, a reference of DAO object can be done
-        // Need to find out list of TeacherDetails from database, so initialize DAO for TeacherDetails first
-        final Dao<TodoItem, Integer> todoDao;
-        try {
-            todoDao = TodoApp.get().getDbHelper().getTodoDao();
-            // Query the database. We need all the records so, used queryForAll()
-            items = todoDao.queryForAll();
+        mTodoAdapter.setData(items);
+        mTodoAdapter.notifyDataSetChanged();
 
-            mTodoAdapter.setData(items);
-            mTodoAdapter.notifyDataSetChanged();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     @Override

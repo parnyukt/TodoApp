@@ -16,13 +16,12 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.j256.ormlite.dao.Dao;
+import com.tanya.todoapp.data.TodoDao;
 import com.tanya.todoapp.fragment.DatePickerFragment;
 import com.tanya.todoapp.fragment.TimePickerFragment;
 import com.tanya.todoapp.model.TodoItem;
 import com.tanya.todoapp.model.TodoState;
 
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -43,6 +42,8 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
     private Button mDateBtn;
     private Button mTimeBtn;
 
+    TodoItem todoItem = new TodoItem();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -56,6 +57,19 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
         mUrgentCheckBox = (CheckBox) findViewById(R.id.urgent_check_box);
         mDateBtn = (Button) findViewById(R.id.btn_date);
         mTimeBtn = (Button) findViewById(R.id.btn_time);
+
+        todoItem = (TodoItem) getIntent().getSerializableExtra("todoItem");
+        if (todoItem != null) {
+            showDate(todoItem);
+        }
+    }
+
+    private void showDate(TodoItem item) {
+        mTitleTextView.setText(item.getTitle());
+        mDescriptionTextView.setText(item.getDescription());
+        mUrgentCheckBox.setChecked(item.getState().equals(TodoState.Done));
+        mDateBtn.setText(formatterDate.format(item.getDue()));
+        mTimeBtn.setText(formatterTime.format(item.getDue()));
     }
 
     @Override
@@ -80,31 +94,23 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
     }
 
     private void onSaveItem(){
-        //todo: save to db new item or update if exists
-        TodoItem todoDetails = new TodoItem();
-        todoDetails.setTitle(mTitleTextView.getText().toString());
-        todoDetails.setDescription(mDescriptionTextView.getText().toString());
-        todoDetails.setUrgent(mUrgentCheckBox.isChecked());
-        todoDetails.setState(TodoState.Undone);
+        //todo: save to db new todoItem or update if exists
+        todoItem.setTitle(mTitleTextView.getText().toString());
+        todoItem.setDescription(mDescriptionTextView.getText().toString());
+        todoItem.setUrgent(mUrgentCheckBox.isChecked());
+        todoItem.setState(TodoState.Undone);
         String dateString = mDateBtn.getText() + " " + mTimeBtn.getText();
         Date dueDate = null;
         try {
             dueDate = formatter.parse(dateString);
-            todoDetails.setDueUtc(dueDate);
+            todoItem.setDue(dueDate);
         } catch (ParseException e) {
             e.printStackTrace();
         }
 
-        try {
-            // This is how, a reference of DAO object can be done
-            final Dao<TodoItem, Integer> todoDao = TodoApp.get().getDbHelper().getTodoDao();
-            todoDao.create(todoDetails);
+        TodoDao.createOrUpdateItem(todoItem);
+        Toast.makeText(mContext, "Todo is added", Toast.LENGTH_LONG).show();
 
-            Toast.makeText(mContext, "Todo is added", Toast.LENGTH_LONG).show();
-
-        } catch (SQLException e) {
-            e.printStackTrace();
-        }
     }
 
     public void showTimePickerDialog(View v) {

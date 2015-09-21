@@ -51,12 +51,12 @@ public class TodoItem implements Serializable {
         this.urgent = urgent;
     }
 
-    public Date getDueUtc() {
-        return dueUtc;
+    public Date getDue() {
+        return due;
     }
 
-    public void setDueUtc(Date dueUtc) {
-        this.dueUtc = dueUtc;
+    public void setDue(Date due) {
+        this.due = due;
     }
 
     public TodoState getState() {
@@ -77,8 +77,7 @@ public class TodoItem implements Serializable {
 
     private Boolean urgent;
 
-    @DatabaseField(columnName = "due_utc")
-    private Date dueUtc;
+    private Date due;
 
     @DatabaseField(canBeNull = false)
     private TodoState state;

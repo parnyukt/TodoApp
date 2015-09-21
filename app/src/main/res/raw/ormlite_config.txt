@@ -18,8 +18,7 @@ fieldName=description
 fieldName=urgent
 # --field-end--
 # --field-start--
-fieldName=dueUtc
-columnName=due_utc
+fieldName=due
 # --field-end--
 # --field-start--
 fieldName=state
