@@ -14,11 +14,14 @@ import com.tanya.todoapp.adapter.RecyclerItemClickListener;
 import com.tanya.todoapp.adapter.TodoAdapter;
 import com.tanya.todoapp.data.DbController;
 import com.tanya.todoapp.model.TodoItem;
+import com.tanya.todoapp.receiver.TodoAlarmBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity {
+
+    private static final String CUSTOM_INTENT = "com.tanya.todoapp.CUSTOM_INTENT";
 
     private Context mContext;
     private RecyclerView mTodoRecycleView;
@@ -55,6 +58,8 @@ public class MainActivity extends AppCompatActivity {
                     }
                 })
         );
+
+        DbController.markOverdueItems();
     }
 
     @Override
@@ -66,6 +71,9 @@ public class MainActivity extends AppCompatActivity {
         mTodoAdapter.setData(items);
         mTodoAdapter.notifyDataSetChanged();
 
+        // Cancel the alarm when we are in the app.
+        TodoAlarmBroadcastReceiver todoAlarm = new TodoAlarmBroadcastReceiver();
+        todoAlarm.cancelAlarm(this);
     }
 
     @Override
@@ -73,6 +81,15 @@ public class MainActivity extends AppCompatActivity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_main, menu);
         return true;
+    }
+
+    @Override
+    protected void onStop() {
+        // setup repeating alarm while the app is stopped.
+        TodoAlarmBroadcastReceiver todoAlarm = new TodoAlarmBroadcastReceiver();
+        todoAlarm.setupAlarm(this);
+
+        super.onStop();
     }
 
     @Override
@@ -101,4 +118,5 @@ public class MainActivity extends AppCompatActivity {
     private void onSearch(){
 
     }
+
 }

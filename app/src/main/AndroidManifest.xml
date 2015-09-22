@@ -2,6 +2,8 @@
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.tanya.todoapp" >
 
+    <uses-permission android:name="android.permission.VIBRATE" />
+
     <application
         android:name="com.tanya.todoapp.TodoApp"
         android:allowBackup="true"
@@ -24,6 +26,9 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="com.tanya.todoapp.MainActivity" />
         </activity>
+
+        <receiver android:name=".receiver.TodoAlarmBroadcastReceiver" >
+        </receiver>
     </application>
 
 </manifest>
