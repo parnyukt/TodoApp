@@ -1,13 +1,17 @@
 package com.tanya.todoapp.adapter;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
 import android.widget.TextView;
 
 import com.tanya.todoapp.R;
+import com.tanya.todoapp.TodoNewItemActivity;
 import com.tanya.todoapp.model.TodoItem;
 import com.tanya.todoapp.model.TodoState;
 
@@ -53,6 +57,24 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
         viewHolder.mStateCheckBox.setChecked(item.getState().equals(TodoState.Done));
         viewHolder.mTitleTextView.setText(item.getTitle());
+
+        disableTouchTheft(viewHolder.mStateCheckBox);
+
+    }
+
+    public static void disableTouchTheft(View view) {
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.getParent().requestDisallowInterceptTouchEvent(true);
+                switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_UP:
+                        view.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
