@@ -6,6 +6,8 @@
     <string name="action_add_todo">Add</string>
     <string name="action_search">Search</string>
     <string name="action_save">Save</string>
+    <string name="action_update">Update</string>
+    <string name="action_delete">Delete</string>
 
     <string name="task_title">Task title</string>
     <string name="task_desription">Task description</string>

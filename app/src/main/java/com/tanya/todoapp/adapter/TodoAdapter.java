@@ -1,17 +1,16 @@
 package com.tanya.todoapp.adapter;
 
-import android.content.Context;
-import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.CheckBox;
+import android.widget.CompoundButton;
 import android.widget.TextView;
 
 import com.tanya.todoapp.R;
-import com.tanya.todoapp.TodoNewItemActivity;
+import com.tanya.todoapp.data.DbController;
 import com.tanya.todoapp.model.TodoItem;
 import com.tanya.todoapp.model.TodoState;
 
@@ -27,12 +26,14 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     public static class ViewHolder extends RecyclerView.ViewHolder {
         public CheckBox mStateCheckBox;
         public TextView mTitleTextView;
+        public TextView mUrgentFlagTextView;
 
 
         public ViewHolder(View view) {
             super(view);
             mStateCheckBox = (CheckBox) view.findViewById(R.id.state_check);
             mTitleTextView = (TextView) view.findViewById(R.id.title);
+            mUrgentFlagTextView = (TextView) view.findViewById(R.id.urgent_flag);
         }
     }
 
@@ -53,10 +54,29 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
     @Override
     public void onBindViewHolder(ViewHolder viewHolder, int position) {
-        TodoItem item = records.get(position);
+        final TodoItem item = records.get(position);
 
         viewHolder.mStateCheckBox.setChecked(item.getState().equals(TodoState.Done));
         viewHolder.mTitleTextView.setText(item.getTitle());
+        if(item.getUrgent()){
+            viewHolder.mUrgentFlagTextView.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.mUrgentFlagTextView.setVisibility(View.INVISIBLE);
+        }
+
+        viewHolder.mStateCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                if(isChecked) {
+                    item.setState(TodoState.Done);
+                } else {
+                    item.setState(TodoState.Undone);
+                }
+
+                // save TodoItem state when check it as "Done"/"Undone"
+                DbController.createOrUpdateItem(item);
+            }
+        });
 
         disableTouchTheft(viewHolder.mStateCheckBox);
 

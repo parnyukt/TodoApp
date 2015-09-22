@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * Created by tatyana on 21.09.15.
  */
-public class TodoDao {
+public class DbController {
 
     public static List<TodoItem> getSortedItems(){
         List<TodoItem> items = new ArrayList<>();
@@ -43,6 +43,20 @@ public class TodoDao {
         } catch (SQLException e) {
             e.printStackTrace();
         }
+
+    }
+
+    public static void deleteItem(TodoItem item){
+        try {
+            final Dao<TodoItem, Integer> todoDao = TodoApp.get().getDbHelper().getTodoDao();
+            todoDao.delete(item);
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+
+    }
+
+    public static void search(){
 
     }
 }

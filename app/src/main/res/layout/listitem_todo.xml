@@ -16,6 +16,15 @@
         android:id="@+id/title"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_weight="1"
         style="@style/Text.ListItem"/>
+
+    <TextView
+        android:id="@+id/urgent_flag"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        style="@style/Text.Urgent"
+        android:text="!"
+        android:layout_marginRight="6dp"/>
 
 </LinearLayout>
