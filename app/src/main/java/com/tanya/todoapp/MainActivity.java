@@ -2,8 +2,8 @@ package com.tanya.todoapp;
 
 import android.content.Context;
 import android.content.Intent;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.Menu;
@@ -13,28 +13,45 @@ import android.view.View;
 import com.tanya.todoapp.adapter.RecyclerItemClickListener;
 import com.tanya.todoapp.adapter.TodoAdapter;
 import com.tanya.todoapp.data.DbController;
+import com.tanya.todoapp.di.AppComponent;
 import com.tanya.todoapp.model.TodoItem;
 import com.tanya.todoapp.receiver.TodoAlarmBroadcastReceiver;
 
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class MainActivity extends AppCompatActivity {
 
     private static final String CUSTOM_INTENT = "com.tanya.todoapp.CUSTOM_INTENT";
-
+    @Inject
+    DbController dbController;
+    @BindView(R.id.todo_recycler_view)
+    RecyclerView mTodoRecycleView;
     private Context mContext;
-    private RecyclerView mTodoRecycleView;
+    //    private RecyclerView mTodoRecycleView;
     private TodoAdapter mTodoAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private AppComponent component;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         mContext = this;
+        ButterKnife.bind(this);
 
-        mTodoRecycleView = (RecyclerView)findViewById(R.id.todo_recycler_view);
+
+        TodoApp.getAppComponent().inject(this);
+//        MainActivity_MembersInjector.inject(this);
+//        .inject(this);
+
+//        mTodoRecycleView = (RecyclerView)findViewById(R.id.todo_recycler_view);
 
         mTodoRecycleView.setHasFixedSize(true);
 
@@ -59,14 +76,14 @@ public class MainActivity extends AppCompatActivity {
                 })
         );
 
-        DbController.markOverdueItems();
+        dbController.markOverdueItems();
     }
 
     @Override
     protected void onResume() {
         super.onResume();
 
-        List<TodoItem> items = DbController.getSortedItems();
+        List<TodoItem> items = dbController.getSortedItems();
 
         mTodoAdapter.setData(items);
         mTodoAdapter.notifyDataSetChanged();
@@ -112,6 +129,7 @@ public class MainActivity extends AppCompatActivity {
 
     private void onAddNewItem(){
         Intent intent = new Intent(mContext, TodoNewItemActivity.class);
+        intent.putExtra("todoItem", new TodoItem());
         startActivity(intent);
     }
 

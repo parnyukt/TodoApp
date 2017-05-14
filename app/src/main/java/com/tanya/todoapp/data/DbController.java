@@ -1,8 +1,5 @@
 package com.tanya.todoapp.data;
 
-import android.provider.ContactsContract;
-import android.widget.Toast;
-
 import com.j256.ormlite.dao.Dao;
 import com.j256.ormlite.stmt.PreparedQuery;
 import com.j256.ormlite.stmt.QueryBuilder;
@@ -15,17 +12,27 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
-/**
- * Created by tatyana on 21.09.15.
- */
+import javax.inject.Inject;
+
 public class DbController {
 
-    public static List<TodoItem> getSortedItems(){
+    @Inject
+    DatabaseHelper dbHelper;
+
+    public DbController() {
+        TodoApp.getAppComponent().inject(this);
+    }
+
+    public static void search() {
+
+    }
+
+    public List<TodoItem> getSortedItems() {
         List<TodoItem> items = new ArrayList<>();
 
         final Dao<TodoItem, Integer> todoDao;
         try {
-            todoDao = TodoApp.get().getDbHelper().getTodoDao();
+            todoDao = dbHelper.getTodoDao();
 
             QueryBuilder<TodoItem, Integer> todoQb = todoDao.queryBuilder();
             PreparedQuery<TodoItem> preparedQuery = todoQb.orderBy(TodoEntry.COLUMN_URGENT, false).prepare();
@@ -38,9 +45,9 @@ public class DbController {
         return items;
     }
 
-    public static void createOrUpdateItem(TodoItem item){
+    public void createOrUpdateItem(TodoItem item) {
         try {
-            final Dao<TodoItem, Integer> todoDao = TodoApp.get().getDbHelper().getTodoDao();
+            final Dao<TodoItem, Integer> todoDao = dbHelper.getTodoDao();
             todoDao.createOrUpdate(item);
 
         } catch (SQLException e) {
@@ -49,9 +56,9 @@ public class DbController {
 
     }
 
-    public static void deleteItem(TodoItem item){
+    public void deleteItem(TodoItem item) {
         try {
-            final Dao<TodoItem, Integer> todoDao = TodoApp.get().getDbHelper().getTodoDao();
+            final Dao<TodoItem, Integer> todoDao = dbHelper.getTodoDao();
             todoDao.delete(item);
         } catch (SQLException e) {
             e.printStackTrace();
@@ -59,13 +66,13 @@ public class DbController {
 
     }
 
-    public static List<TodoItem> markOverdueItems(){
-        List<TodoItem> items = new ArrayList<>();
+    public List<TodoItem> markOverdueItems() {
+        List<TodoItem> items;
         List<TodoItem> overdueItems = new ArrayList<>();
 
         final Dao<TodoItem, Integer> todoDao;
         try {
-            todoDao = TodoApp.get().getDbHelper().getTodoDao();
+            todoDao = dbHelper.getTodoDao();
 
             QueryBuilder<TodoItem, Integer> todoQb = todoDao.queryBuilder();
             PreparedQuery<TodoItem> preparedQuery = todoQb.where().eq(TodoEntry.COLUMN_STATE, TodoState.Undone).prepare();
@@ -84,9 +91,5 @@ public class DbController {
             e.printStackTrace();
         }
         return overdueItems;
-    }
-
-    public static void search(){
-
     }
 }

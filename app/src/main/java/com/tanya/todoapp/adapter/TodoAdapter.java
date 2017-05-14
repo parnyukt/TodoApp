@@ -16,30 +16,32 @@ import com.tanya.todoapp.model.TodoState;
 
 import java.util.List;
 
-/**
- * Created by tparnyuk on 17.09.15.
- */
+import javax.inject.Inject;
+
 public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
 
+    @Inject
+    DbController dbController;
     private List<TodoItem> records;
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-        public CheckBox mStateCheckBox;
-        public TextView mTitleTextView;
-        public TextView mUrgentFlagTextView;
-
-
-        public ViewHolder(View view) {
-            super(view);
-            mStateCheckBox = (CheckBox) view.findViewById(R.id.state_check);
-            mTitleTextView = (TextView) view.findViewById(R.id.title);
-            mUrgentFlagTextView = (TextView) view.findViewById(R.id.urgent_flag);
-        }
-    }
 
     // Provide a suitable constructor (depends on the kind of dataset)
     public TodoAdapter(List<TodoItem> dataset) {
         records = dataset;
+    }
+
+    private static void disableTouchTheft(View view) {
+        view.setOnTouchListener(new View.OnTouchListener() {
+            @Override
+            public boolean onTouch(View view, MotionEvent motionEvent) {
+                view.getParent().requestDisallowInterceptTouchEvent(true);
+                switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
+                    case MotionEvent.ACTION_UP:
+                        view.getParent().requestDisallowInterceptTouchEvent(false);
+                        break;
+                }
+                return false;
+            }
+        });
     }
 
     @Override
@@ -74,27 +76,12 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
                 }
 
                 // save TodoItem state when check it as "Done"/"Undone"
-                DbController.createOrUpdateItem(item);
+                dbController.createOrUpdateItem(item);
             }
         });
 
         disableTouchTheft(viewHolder.mStateCheckBox);
 
-    }
-
-    public static void disableTouchTheft(View view) {
-        view.setOnTouchListener(new View.OnTouchListener() {
-            @Override
-            public boolean onTouch(View view, MotionEvent motionEvent) {
-                view.getParent().requestDisallowInterceptTouchEvent(true);
-                switch (motionEvent.getAction() & MotionEvent.ACTION_MASK) {
-                    case MotionEvent.ACTION_UP:
-                        view.getParent().requestDisallowInterceptTouchEvent(false);
-                        break;
-                }
-                return false;
-            }
-        });
     }
 
     @Override
@@ -109,5 +96,19 @@ public class TodoAdapter extends RecyclerView.Adapter<TodoAdapter.ViewHolder> {
     public void setData(List<TodoItem> data){
         records.clear();
         records.addAll(data);
+    }
+
+    static class ViewHolder extends RecyclerView.ViewHolder {
+        CheckBox mStateCheckBox;
+        TextView mTitleTextView;
+        TextView mUrgentFlagTextView;
+
+
+        ViewHolder(View view) {
+            super(view);
+            mStateCheckBox = (CheckBox) view.findViewById(R.id.state_check);
+            mTitleTextView = (TextView) view.findViewById(R.id.title);
+            mUrgentFlagTextView = (TextView) view.findViewById(R.id.urgent_flag);
+        }
     }
 }

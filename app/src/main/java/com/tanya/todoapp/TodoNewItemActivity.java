@@ -3,9 +3,10 @@ package com.tanya.todoapp;
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
 import android.content.Context;
+import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.DialogFragment;
 import android.support.v7.app.AppCompatActivity;
-import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,30 +23,46 @@ import com.tanya.todoapp.fragment.TimePickerFragment;
 import com.tanya.todoapp.model.TodoItem;
 import com.tanya.todoapp.model.TodoState;
 
-import org.w3c.dom.Text;
-
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
 
+import javax.inject.Inject;
+
+import butterknife.BindView;
+import butterknife.ButterKnife;
+
 public class TodoNewItemActivity extends AppCompatActivity implements DatePickerDialog.OnDateSetListener,
         TimePickerDialog.OnTimeSetListener {
+
+    @Inject
+    DbController dbController;
 
     SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy hh:mm");
     SimpleDateFormat formatterDate = new SimpleDateFormat("dd/MM/yyyy");
     SimpleDateFormat formatterTime = new SimpleDateFormat("hh:mm");
-
+    @Nullable
+    @BindView(R.id.edit_title)
+    TextView mTitleTextView;
+    @Nullable
+    @BindView(R.id.edit_description)
+    TextView mDescriptionTextView;
+    @Nullable
+    @BindView(R.id.urgent_check_box)
+    CheckBox mUrgentCheckBox;
+    @Nullable
+    @BindView(R.id.state_text)
+    TextView mStateText;
+    @Nullable
+    @BindView(R.id.btn_date)
+    Button mDateBtn;
+    @Nullable
+    @BindView(R.id.btn_time)
+    Button mTimeBtn;
+    TodoItem todoItem;
     private Context mContext;
-    private TextView mTitleTextView;
-    private TextView mDescriptionTextView;
-    private CheckBox mUrgentCheckBox;
-    private TextView mStateText;
-    private Button mDateBtn;
-    private Button mTimeBtn;
-
-    TodoItem todoItem = new TodoItem();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -53,17 +70,19 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
         mContext = this;
 
         setContentView(R.layout.activity_todo_new_item);
+        ButterKnife.bind(this);
+        TodoApp.getAppComponent().inject(this);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        mTitleTextView = (TextView) findViewById(R.id.edit_title);
-        mDescriptionTextView = (TextView) findViewById(R.id.edit_description);
-        mUrgentCheckBox = (CheckBox) findViewById(R.id.urgent_check_box);
-        mStateText = (TextView) findViewById(R.id.state_text);
-        mDateBtn = (Button) findViewById(R.id.btn_date);
-        mTimeBtn = (Button) findViewById(R.id.btn_time);
+//        mTitleTextView = (TextView) findViewById(R.id.edit_title);
+//        mDescriptionTextView = (TextView) findViewById(R.id.edit_description);
+//        mUrgentCheckBox = (CheckBox) findViewById(R.id.urgent_check_box);
+//        mStateText = (TextView) findViewById(R.id.state_text);
+//        mDateBtn = (Button) findViewById(R.id.btn_date);
+//        mTimeBtn = (Button) findViewById(R.id.btn_time);
 
         todoItem = (TodoItem) getIntent().getSerializableExtra("todoItem");
-        if (todoItem != null) {
+        if (todoItem.getTitle() != null) {
             showDate(todoItem);
         }
     }
@@ -116,7 +135,7 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
         item.setUrgent(mUrgentCheckBox.isChecked());
         item.setState(TodoState.Undone);
         String dateString = mDateBtn.getText() + " " + mTimeBtn.getText();
-        Date dueDate = null;
+        Date dueDate;
         try {
             dueDate = formatter.parse(dateString);
             item.setDue(dueDate);
@@ -124,13 +143,13 @@ public class TodoNewItemActivity extends AppCompatActivity implements DatePicker
             e.printStackTrace();
         }
 
-        DbController.createOrUpdateItem(item);
+        dbController.createOrUpdateItem(item);
         Toast.makeText(mContext, "Todo is added", Toast.LENGTH_LONG).show();
         finish();
     }
 
     private void onDeleteItem(TodoItem item) {
-        DbController.deleteItem(item);
+        dbController.deleteItem(item);
         Toast.makeText(mContext, "Todo is deleted", Toast.LENGTH_LONG).show();
         finish();
     }

@@ -8,7 +8,7 @@
         <item name="android:textColorPrimary">@color/White</item>
         <item name="android:actionModeBackground">@color/White</item>
         <item name="actionBarPopupTheme">@style/ThemeOverlay.AppCompat.Light</item>
-        <item name="android:editTextStyle">@style/App_EditTextStyle</item>
+        <!--<item name="android:editTextStyle">@style/App_EditTextStyle</item>-->
     </style>
 
     <style name="App_EditTextStyle" parent="@android:style/Widget.EditText">

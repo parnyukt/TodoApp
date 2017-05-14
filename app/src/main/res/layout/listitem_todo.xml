@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    android:orientation="horizontal" android:layout_width="match_parent"
-    android:layout_height="match_parent"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:layout_marginBottom="10dp"
     android:gravity="center_vertical"
-    android:layout_marginBottom="10dp">
+    android:orientation="horizontal">
 
     <CheckBox
         android:id="@+id/state_check"
@@ -14,17 +15,17 @@
 
     <TextView
         android:id="@+id/title"
+        style="@style/Text.ListItem"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
-        style="@style/Text.ListItem"/>
+        android:layout_weight="1" />
 
     <TextView
         android:id="@+id/urgent_flag"
+        style="@style/Text.Urgent"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        style="@style/Text.Urgent"
-        android:text="!"
-        android:layout_marginRight="6dp"/>
+        android:layout_marginRight="6dp"
+        android:text="!" />
 
 </LinearLayout>
